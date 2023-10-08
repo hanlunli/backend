@@ -1,382 +1,187 @@
-<p align="center">
-  <img src="assets/images/README_cover.png" width="350" align="center"/>
-</p><br>
+# Flask Portfolio Starter
 
-> **`Project Abandoned`**. This project has been abandoned and might be out of date with current standards and with respect to security and features etc.. I may revamp this project in the future but there is no further development planned at the moment.
+Use this project to create a Flask Servr.
 
-> Embeddable and Highly Secure PHP Authentication System with Login, Signup, User Profiles, Profile Editing, Account Verification via Email, Password Reset System, Remember Me Feature, Automatic Logout on Inactivity,  Global ERROR & STATUS variable system, Authentication checks and more.
+Runtime link: <https://flask.nighthawkcodingsociety.com/>
+GitHub link: https://github.com/nighthawkcoders/flask_portfolio
 
-# Table of Contents
+## Conventional way to get started
 
-- [Table of Contents](#table-of-contents)
-  - [Getting Started](#getting-started)
-    - [Requirements](#requirements)
-    - [Installation](#installation)
-    - [Existing Account(s)](#existing-accounts)
-    - [Project File Structure](#project-file-structure)
-    - [Building on top of System](#building-on-top-of-system)
-  - [Components](#components)
-    - [Languages](#languages)
-    - [Development Environment](#development-environment)
-    - [External Resources/Plugins](#external-resourcesplugins)
-  - [Features](#features)
-    - [Easy Integration / Embedding](#easy-integration--embedding)
-    - [Security](#security)
-      - [SQL Injection Protection](#sql-injection-protection)
-      - [Header & Email Injection Protection](#header--email-injection-protection)
-      - [CSRF Protection](#csrf-protection)
-      - [Secure Remember-me Cookie](#secure-remember-me-cookie)
-      - [Secure Account Activation & Password Reset](#secure-account-activation--password-reset)
-    - [Login | Signup](#login--signup)
-    - [Automatic Logout on Inactivity](#automatic-logout-on-inactivity)
-    - [User Profile | Profile Editing](#user-profile--profile-editing)
-    - [Email Verification | Account Activation](#email-verification--account-activation)
-    - [Password Resetting](#password-resetting)
-    - [Auth Verification](#auth-verification)
-    - [Remember Me Feature](#remember-me-feature)
-    - [GLOBAL temporary ERROR & STATUS values](#global-temporary-error--status-values)
-    - [Contact System](#contact-system)
-  - [Future Improvements](#future-improvements)
-  - [Contribution Guidelines](#contribution-guidelines)
-  - [License](#license)
-  - [Personal Note](#personal-note)
+> Quick steps that can be used with MacOS, WSL Ubuntu, or Ubuntu; this uses Python 3.9 or later as a prerequisite.
 
-## Getting Started
+- Open a Terminal, clone project and cd to project area
 
-### Requirements
-* PHP
-* Apache server
-* MySQL
-* PHPMailer
-* Bootstrap
-* JQuery 
+```bash
+mkdir ~/vscode; cd ~/vscode
 
-### Installation
-1. Import the file `assets/setup/DBcreation.sql` into the current DBMS. The dump file also creates the database (named `klik_loginsystem`), so no prior action is needed. If database name needs to be updated, change it in the dump file where the database title is declared.
+git clone https://github.com/nighthawkcoders/flask_portfolio.git
 
-2. Edit the file `assets/setup/env.php` and setup the Application information, Database connection and SMTP server. Port value is usually not needed in Database connections, so only edit if you know what you are doing. The email server (and the connected email account) will be used to send confirmation, validation and notification emails. 
-
-```php
-// env.php
-
-if (!defined('APP_NAME'))                       define('APP_NAME', 'Login System');
-if (!defined('APP_ORGANIZATION'))               define('APP_ORGANIZATION', 'KLiK');
-if (!defined('APP_OWNER'))                      define('APP_OWNER', 'msaad1999');
-if (!defined('APP_DESCRIPTION'))                define('APP_DESCRIPTION', 'Embeddable PHP Login System');
-
-if (!defined('ALLOWED_INACTIVITY_TIME'))        define('ALLOWED_INACTIVITY_TIME', time()+1*60);
-
-if (!defined('DB_DATABASE'))                    define('DB_DATABASE', 'klik_loginsystem');
-if (!defined('DB_HOST'))                        define('DB_HOST','127.0.0.1');
-if (!defined('DB_USERNAME'))                    define('DB_USERNAME','root');
-if (!defined('DB_PASSWORD'))                    define('DB_PASSWORD' ,'');
-if (!defined('DB_PORT'))                        define('DB_PORT' ,'');
-
-if (!defined('MAIL_HOST'))                      define('MAIL_HOST', 'smtp.gmail.com');
-if (!defined('MAIL_USERNAME'))                  define('MAIL_USERNAME', 'example.email@gmail.com');
-if (!defined('MAIL_PASSWORD'))                  define('MAIL_PASSWORD', 'example-password');
-if (!defined('MAIL_ENCRYPTION'))                define('MAIL_ENCRYPTION', 'ssl');
-if (!defined('MAIL_PORT'))                      define('MAIL_PORT', 465);
+cd flask_portfolio
 ```
 
-### Existing Account(s)
-The database already contains a sample account to test things out with. Use that or head over to the signup page and start making new accounts.
+- Install python dependencies for Flask, etc.
 
-```php
-// credentials for existing account
-
-username: supahot
-password: aaaaaa
+```bash
+pip install -r requirements.txt
 ```
 
-### Project File Structure
+- Run from Terminal without VSCode
 
-  
-| Path / File | Purpose  |
-| -- | -- | 
-| `[accessible URLs/Pages]`     | All folders in root directory except `assets`. |
-| `assets/css`                  | Folder for global or layout-specific custom CSS files. |
-| `assets/images`               | Images used in Application UI or git README. |
-| `assets/includes`             | Functions or classes. |
-| `assets/js`                   | Custom js files. |
-| `assets/setup`                | Project configuration and setup files. |
-| `assets/uploads`              | Folder for all content uploaded by application users. |
-| `assets/uploads/users`        | Images uploaded by users. |
-| `assets/vendor`               | Folder for all plugins/resources. |
+  - Run python from command line and check server
 
-### Building on top of System
+    ```bash
+    python main.py
+    ```
 
-Once this Authentication system has been set up, it can be easily built upon this way: New pages can be quickly added by creating more folders in the root directory, with the main frontend file being `index.php`, backend functionalities in the `includes` subfolder and custom styling in the `custom.css` file, present in the same top-level folder as that of index.php.
+### Open project in VSCode
 
-New function groups or classes can be created in new files in the `assets/includes/` folder, and will have to be included in relevant pages. if the added functionalities are mostly universal, they can be required in the `assets/layouts/header.php` file (this includes them for all frontend files but backend files will still have to be individually linked). In the same way, more global css files can be saved in `assets/css` and included in the header.php layout file. Same convention will hold for JS files, with the scripts being in `assets/js/` and included in `assets/layouts/footer.php` file.
+- Prepare VSCode and run
 
-Additional plugins or offline resources can be placed in the `assets/vendor/` folder and linked-to in either the header or footer layout file, depending on the file type to be linked.
+  - From Terminal run VSCode
 
-> A good convention to adopt while building on top of this would be to adopt the same file structure conventions as in this system, in order to avoid extra and/or unneeded effort to synchronise the entire project. The system has already been made with the default PHP Application file structure in order to avoid most conflicts.
+    ```bash
+    code .
+    ```
 
-## Components
+    Select main.py and play
 
-### Languages
+## Alternate way, Nix way to get started
 
-- PHP-7.3.11
-- MySQLi API
-- HTML5
-- CSS3
+> Quick steps with MacOS, WSL Ubuntu, or Ubuntu; this uses Nix for programmatic way to build tools and dependencies.  This is only recommended if you are having problems with you desktop MacOS, WSL Ubuntu, or Ubuntu.
 
-### Development Environment
+- Open a Terminal, install nix which requires admin password:
 
-- Apache-2.4.41 
-- Windows 10
-
-### External Resources/Plugins
-
-- PHPMailer-6.0.6
-- Bootstrap-4.3.1
-- Font awesome-5.12.0
-- JQuery-3.4.1
-
-## Features
-
-### Easy Integration / Embedding
-
-The application is designed to be easily embeddable and is meant to be built upon. The current UI has been built mostly on raw bootstrap, and is meant to be completely replaced rather than improved upon. The purpose of this project is to provide the needed `backend` functionality, and all `UI elements` should be replaced and/or rebuilt when creating a separate application.
-
-It is recommended that the application be installed/embedded into the project before creation of application backend _and preferably the frontend as well). Otherwise, if the existing file structure conflicts with this project's, it may cause problems and will make it difficult to re-synchronise the entire project again.
-
-The project was created with the standard PHP development file structure, in order to maintain flexibility. Simply add more features/ pages in the same way the sample page-folders in the root folder are created.
-
-In each page folder, the `index.php` is the main target page, the `includes` folder holds the backend functionality and the `custom.css` enables custom designs on top of a global css file without interfering with other pages.
-
-### Security
-
-#### SQL Injection Protection
-
-The system employs `mysqli prepared statements` for all database interactions, which eliminates most risks of SQL injection. There is no raw SQL query used anywhere, and moreover, all data input by user is verified and checked before being used in any application functionality. Hence further hardening the security measures.
-
-```php
-// example database query
-
-$sql = "DELETE FROM auth_tokens WHERE user_email=? AND auth_type='account_verify';";
-$stmt = mysqli_stmt_init($conn);
-if (!mysqli_stmt_prepare($stmt, $sql)) {
-
-    $_SESSION['ERRORS']['sqlerror'] = 'SQL ERROR';
-    header("Location: ../");
-    exit();
-}
-else {
-
-    mysqli_stmt_bind_param($stmt, "s", $email);
-    mysqli_stmt_execute($stmt);
-}
+```bash
+sh <(curl -L https://nixos.org/nix/install)
 ```
 
-#### Header & Email Injection Protection
+- ***Restart Terminal***
 
-The application uses the `_cleaninjections()` function defined in the `assets/includes/security_functions.php` to filter and validate data. Any and all data entered by users for any functionality is checked for header injection before being used. The filter functions remove any character(s) that may prove to be a threat, thus rendering any malicious script or data harmless.
+- Install Python Package helper
 
-On all back functionality, each and every single value being passed in the POST body is checked for possible injection. The same holds for emails, preventing users to add additional email-specific fields in it. This greatly reduces the risk of Header or Email injection.
-
-```php
-// Securing against Header Injection
-
-foreach($_POST as $key => $value){
-
-  $_POST[$key] = _cleaninjections(trim($value));
-}
+```bash
+nix-env -if https://github.com/DavHau/mach-nix/tarball/3.5.0 -A mach-nix
 ```
 
-#### CSRF Protection
+- Open a Terminal, cd to project area
 
-There are also heavy protection measures against CSRF attempts. A secure `csrf token` is generated on session start, and sent as a hidden value in the post body for all forms, where it is validated and only allows the script to proceed if the validation succeeds. The csrf protection works for all forms regardless of whether the user is logged in or not.
+```bash
+mkdir ~/vscode; cd ~/vscode
 
-The csrf token is handled by the functions present in the `assets/includes/security_functions.php` file. The token is encrypted to keep it from being extracted and exploited.
+git clone https://github.com/nighthawkcoders/flask_portfolio.git
 
-```php
-// csrf token generation
-
-function generate_csrf_token() {
-  if (!isset($_SESSION)) {
-      session_start();
-  }
-  if (empty($_SESSION['token'])) {
-      $_SESSION['token'] = bin2hex(random_bytes(32));
-  }
-}
+cd flask_portfolio
 ```
 
-#### Secure Remember-me Cookie
+- Build nix packages from requirements.txt
 
-The cookie set for the `remember-me` feature uses encrypted `selector` and `validator` values that keep it from being interfered with or exploited. The token itself is not stored as-is in the database as well, eliminating risk of info leak in case of database breach. The authentication token and selector are stored in the `auth_tokens` table in the database.
-
-#### Secure Account Activation & Password Reset
-
-The features for account activation and password reset both use a link sent via email which also uses encrypted encrypted `selector` and `validator` values. All three features, namely remember-me cookies, account activation and password reset use the `auth_tokens` table to store the encrypted tokens and selector. Each of the tokens have an expiry time, meaning that once expired, they cannot be used. All tokens are deleted on being used, so they cannot be used over and over again.
-
-### Login | Signup
-
-The system supports a default and secure login and signup system. The user can signup to make a new account, and then will be prompted to login to the new account with his credentials. The user can also set his profile image on signup. To make a new account, the user must set a unique username and email. There are also additional information fields available, but they are optional and can be skipped.
-
-The login system also supports a `remember me` feature, which will keep the user logged in for a certain time (currently a month) even if the browser or system is turned off.
-
-### Automatic Logout on Inactivity
-
-The Application has a jquery snippet in `assets/js/check_inactive.js` which continously checks if the user is inactive. When the user is inactive for more than the specified time, it automatically logs the user out and redirects to the login page. The allowed inactivity time period is currently `1 hr`, specified in `assets/setup/env.php` in the `ALLOWED_INACTIVITY_TIME` constant. The js script calls the script in `assets/includes/checkinactive.ajax.php` via AJAX call, where the user's inactivity is checked.
-
-```php
-// checkinactive.ajax.php
-
-session_start();
-if (isset($_SESSION['auth']) && !isset($_COOKIE['rememberme'])){
-    if(time() > $_SESSION['expire']){
-        session_unset();
-        session_destroy();
-        echo 'logout_redirect';
-    }
-}
+```bash
+mach-nix env ./env -r requirements.txt
 ```
 
-### User Profile | Profile Editing
+- End of nix shell setup, exit shell
 
-The system supports a proper user profile accessible on registration. Currently only a few extra-information fields have been put into the database, namely the user's first name, last name, gender, profile headline and bio. These are only meant to showcase the use of additional user information, and as such, are optional fields and can be skipped during signup. The user also has a profile image that he can choose/set at signup and can also update it later.
-
-There is also a profile update system, in which the user can update all of his information. In current system, the user must have a unique username and email, so the system confirms the availability of new username or email if they were changed for profile updation. 
-
-> The system can also update the user's profile image, and deletes the old image afterwards to prevent useless images piling up in the server's file system.
-
-There is also a separate check for the password updation, which requires the user to input the current password and confirm the new password as well. Once password is updated, a notification email is sent to the user on his (now) current email address.
-
-### Email Verification | Account Activation
-
-On signup / registration, the system gives the user access to the new account, but with limited access. On successful signup, a confirmation mail is sent to the user's email, with a secure verification link. Once the link is accessed, the account is unlocked/activated and the user can access all the additional functionalities. The link is created with encrypted `selector` and `token` fields, while the respective entry is created in the database for verification for whenever the link is accessed.
-
-The database fields which determines if the account is verified/unlocked or not is the `verified_at` column. If the column is NULL, then the account is not verified. The verification email sent to the user sets that column value to the current Date/Time at that point, hence unlocking the account.
-
-On login, the script checks the `verified_at` column and sets the value of `$_SESSION['auth']` accordingly. If the user is unverified, he is redirected to the `APPLICATION_PATH/verify` page where he is prompted to activate his account with the sent email. In case that the user did not receive the email, an option is provided for him to resend that email. Once the account is activated and the page is refreshed, the user will be redirected away from the verify page to the default `APPLICATION_PATH/home` page.
-
-### Password Resetting
-
-There is also a password reset system, or by well known terminology, a `forgot password?` feature. Link to that feature is present on the login page below the login form, and requires that the user input his email with which he had signed up. If the email is not present in the database, the request is ignored, and if it is, a highly secure confirmation email is sent to the user. The user can access the link provided in that email, which will force him to recreate his password, and once done, will prompt the user to log in with the new credentials.
-
-The confirmation / reset email uses the `auth_tokens` table in the database to create a secure `selector` and `token` for the user, then appends them to the reset link after encryption. The token has a certain expiry time (currently `1 hour`), after which it becomes invalid.
-
-### Auth Verification
-
-The system handles authentication checks with the help of specific functions stored in `assets/includes/auth_functions.php`. There are multiple functions to determine current state of the user. And the checks can be applied to any page in just one like by simply calling the respective function at the top of the file.
-
-The available authentication functions (as of right now) are:
-
-```php
-function check_logged_in() { ... }
-function check_logged_in_butnot_verified() { ... }
-function check_logged_out() { ... }
-function check_verified() { ... }
-function check_remember_me() { ... }
-function force_login($email) { ... }
+```
+exit
 ```
 
-Each page can be set to accept users in a certain state by simply calling the respective function at the top of the file.
+### Run Server or run VSCode
 
-```php
-// Home page, only meant for verified users
+- Run nix shell (virtual environment)
 
-define('TITLE', "Home");
-include '../assets/layouts/header.php';
-check_verified();
+```bash
+nix-shell ./env
 ```
 
-### Remember Me Feature
+- Run from Terminal without VSCode
 
-The system's login system has a `remember me` feature, which keeps the user logged in even if the browser or device is shutdown. During logging in, if the user checked the `rememer me` option, the feature sets a secure cookie with encrypted `selector` and `token` values, and creates the respective values in the `auth_tokens` table in the database.
+  - Run python from command line and check server
 
-```php
-$selector = bin2hex(random_bytes(8));
-$token = random_bytes(32);
-setcookie(
-  'rememberme',
-  $selector.':'.bin2hex($token),
-  time() + 864000,
-  '/',
-  NULL,
-  false, 
-  true  
-);
-```
+    ```bash
+    python main.py
+    ```
 
-To validate the cookie, the system uses the `check_remember_me()` function in the `assets/includes/auth_functions.php` file. Once the encrypted values are verified against the ones stored in the database, it calls the `force_login()` method which simply creates the relevant session variables for the user and logs him/her into the application.
+- Prepare VSCode and run
 
-### GLOBAL temporary ERROR & STATUS values
+  - From Terminal run VSCode
 
-The project uses a global ERROR and STATUS variable for any errors and page status, assigned as an associative array to `$_SESSION['ERRORS']` and `$_SESSION['STATUS']`, with the keys being error/status names and values being the messages. These values are temporary, meaning that the error values disappear when the page is refreshed, returning the page to its original state. This keeps the URLs clean (by not using URL queries) and the associative array means that on occurence of any error, a new key with any name could be created and given the error message as the value, and could easily be dealt with on the frontend files as well.
+    ```bash
+    code .
+    ```
 
-For example, an example of creating an error and assigning it to `$_SESSION['ERRORS']` in a backend script is:
+  - In VSCode open Terminal, verify Nix python
 
-```php
-// checking email availability
+    ```bash
+    which python
+    ```
 
-if ($_SESSION['email'] != $email && !availableEmail($conn, $email)) {
+  - Open Setting: Ctl-Shift P or Cmd-Shift
+    - Search Python: Select Interpreter
+    - Match interpreter to `which output` above
 
-  $_SESSION['ERRORS']['emailerror'] = 'email already taken';
-  header("Location: ../");
-  exit();
-}
-```
+  - Try Play button and try to Debug
 
-Similarly, this is how the error can be accessed on the visible frontend file:
+## Idea
 
-```html
-// profile update form with email field
+> The purpose of project is to serve APIs.  It is the backend piece of a Full-Stack project.  Review API folder for endpoints.
 
-<div class="form-group">
-  <label for="email">Email address</label>
-  <input type="email" id="email" name="email" ... >
-  <sub class="text-danger">
-    <?php
-        if (isset($_SESSION['ERRORS']['emailerror']))
-            echo $_SESSION['ERRORS']['emailerror'];
-    ?>
-  </sub>
-</div>
-```
+### Visual thoughts
 
-### Contact System
+> The Starter code should be fun and practical.
 
-The application has a simple contact system that uses the mail server setup in `assets/setup/env.php` to send an email to itself, containing the sender information as well as the message. The contact form is accessible on being logged in or not. When not logged it, it requires the sender name and email. And when logged in, it uses the current user's username and email to send the contact mail.
-The system uses an email template to send the emails, which can be updated, improved or replaced.
+- Organize with Bootstrap menu
+- Add some color and fun through VANTA Visuals (birds, halo, solar, net)
+- Show some practical and fun links (hrefs) like Twitter, Git, Youtube
+- Build a Sample Page (Table)
+- Show project specific links (hrefs) per page
 
-## Future Improvements
+### Files and Directories in this Project
 
-There are some things i have in mind for adding to this project later on. However, that is a commitment I may or may not be able to stay true to. If any of you people end up improving on this in any way, it would be an honor to have you contribute to this project.
+These are some of the key files and directories in this project
 
-That being said, these are some possible improvements I have in my mind right now:
+README.md: This file contains instructions for setting up the necessary tools and cloning the project. A README file is a standard component of all properly set up GitHub projects.
 
-- OAuth login. (login via 3rd party applications like gmail or github etc). 
-- Requirement for mail confirmation with new address for email update.
-- Keep a `data` column in `users` table in the database with JSON encoded text and move extra fields like first name, last name, bio and headline etc into it. That will make the table more manageable and create more flexibility to add as many data fields as needed in JSON format. 
-- Raw functionality of a simple admin dashboard, with a simple list of all users with functionality to:
-  - Search for a user.
-  - Filter users.
-  - Delete users.
-  - Activate/ deactivate users (By manually setting their `verified_at` column to NULL or current date/time).
-  - Create users.
-  - Update non-critical (and maybe critical too) information for users.
-- Option to delete account, with confirmation via email being necessary for that.
-- Cover images for users.
-- User levels assigned upon registration (admin, normal-user etc) and permissions system for that.
-- Sending emails via `AJAX scripts` in the background to decrease script execution times.
-- Realtime password strength checker with `JQuery`.
-- One universal file with validation rules for all user inputs.
+requirements.txt: This file lists the dependencies required to turn this Python project into a Flask/Python project. It may also include other backend dependencies, such as dependencies for working with a database.
 
-## Contribution Guidelines
+main.py: This Python source file is used to run the project. Running this file starts a Flask web server locally on localhost. During development, this is the file you use to run, test, and debug the project.
 
-If you want to contribute to this project, please refer to the [Contributing Guidelines](CONTRIBUTING.md).
+Dockerfile and docker-compose.yml: These files are used to run and test the project in a Docker container. They allow you to simulate the project’s deployment on a server, such as an AWS EC2 instance. Running these files helps ensure that your tools and dependencies work correctly on different machines.
 
-## License
+instances: This directory is the standard location for storing data files that you want to remain on the server. For example, SQLite database files can be stored in this directory. Files stored in this location will persist after web application restart, everyting outside of instances will be recreated at restart.
 
-This project has been assigned the [MIT License](LICENSE), so go ahead and feel free to use any and/or all parts of this system and to build on it. Although I would still insist that if you do end up improving this, do accidentally contribute, it would be an honour.
+static: This directory is the standard location for files that you want to be cached by the web server. It is typically used for image files (JPEG, PNG, etc.) or JavaScript files that remain constant during the execution of the web server.
 
-## Personal Note
+api: This directory contains code that receives and responds to requests from external servers. It serves as the interface between the external world and the logic and code in the rest of the project.
 
-Hey there, this was a small little side project, which was a great learning experience for me and influenced me to focus more on bigger, more complex frameworks. I have now moved on to Laravel development, and if you think you're adding too much to this or any other raw PHP system, it may be high time for you to move onto a better framework like Laravel as well.
+model: This directory contains files that implement the backend functionality for many of the files in the api directory. For example, there may be files in the model directory that directly interact with the database.
 
-> As mentioned before, in case that you do actually appreciate this project or the effort put into it, you're probably too far away for me to demand a good cup of coffee, so for now, how about a star? And if you're feeling great, how about a contribution?
+templates: This directory contains files and subdirectories used to support the home and error pages of the website.
+
+.gitignore: This file specifies elements to be excluded from version control. Files are excluded when they are derived and not considered part of the project’s original source. In the VSCode Explorer, you may notice some files appearing dimmed, indicating that they are intentionally excluded from version control based on the rules defined in .gitignore.
+
+### Implementation Summary
+
+#### July 2023
+
+> Updates for 2023 to 2024 school year.
+
+- Update README with File Descriptions
+
+#### January 2023
+
+> This project focuses on being a Python backend server.  Intentions are to only have simple UIs an perhaps some Administrative UIs.
+
+#### September 2021
+
+> Basic UI elements were implemented showing server side Flask with Jinja 2 capabilities.
+
+- Project entry point is main.py, this enables Flask Web App and provides capability to renders templates (HTML files)
+- The main.py is the  Web Server Gateway Interface, essentially it contains a HTTP route and HTML file relationship.  The Python code constructs WSGI relationships for index, kangaroos, walruses, and hawkers.
+- The project structure contains many directories and files.  The template directory (containing html files) and static directory (containing js files) are common standards for HTML coding.  Static files can be pictures and videos, in this project they are mostly javascript backgrounds.
+- WSGI templates: index.html, kangaroos.html, ... are aligned with routes in main.py.
+- Other templates support WSGI templates.  The base.html template contains common Head, Style, Body, Script definitions.  WSGI templates often "include" or "extend" these templates.  This is a way to reuse code.
+- The VANTA javascript statics (backgrounds) are shown and defaulted in base.html (birds), but are block replaced as needed in other templates (solar, net, ...)
+- The Bootstrap Navbar code is in navbar.html. The base.html code includes navbar.html.  The WSGI html files extend base.html files.  This is a process of management and correlation to optimize code management.  For instance, if the menu changes discovery of navbar.html is easy, one change reflects on all WSGI html files.
+- Jinja2 variables usage is to isolate data and allow redefinitions of attributes in templates.  Observe "{% set variable = %}" syntax for definition and "{{ variable }}" for reference.
+- The base.html uses combination of Bootstrap grid styling and custom CSS styling.  Grid styling in observe with the "<Col-3>" markers.  A Bootstrap Grid has a width of 12, thus four "Col-3" markers could fit on a Grid row.
+- A key purpose of this project is to embed links to other content.  The "href=" definition embeds hyperlinks into the rendered HTML.  The base.html file shows usage of "href={{github}}", the "{{github}}" is a Jinja2 variable.  Jinja2 variables are pre-processed by Python, a variable swap with value, before being sent to the browser.
