@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <div class="video-container">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/x7SQaDTSrVg?si=FnZkm98umj3-_fVz?&autoplay=1&mute=1&playsinline=1&controls=0&showinfo=0&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+   </div>
+<!-- Basic Page Needs
+   -->
+  <meta charset="utf-8">
+  {% if title %}
+   <title>{{ title }}</title>
+  {% endif %}
+<!-- Mobile Specific Metas
+   -->
+  <meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no">
+<!-- FONT
+  -->    
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../static/css/normalize.css">
+  <link rel="stylesheet" href="../static/css/skeleton.css">
+<link rel="icon" type="image/png" href="../static/logo.png">
+</head>
+<body>
+<!-- Primary Page Layout
+   -->
+<div style="margin-top:5%; margin-left:5%">
+ <div style="width:100%;">
+  <div style="width: 80%; height: 100px; float: left;">
+     {% with messages = get_flashed_messages(with_categories=True)%}
+ {% if messages %}
+  {% for category, message in messages %}
+   <div class="alert alert-{{ category }}">
+    <h5>{{ message }}<h5>
+   </div>
+  {% endfor %}
+ {% endif %}
+     {% endwith %}
+     {% block info %}
+     {% endblock %}
+  </div>
+ </div>
+</div>
+
+<!-- End Document
+   -->
+</body>
+</html>
+
+<style>
+/* Discord-based CSS */
+
+/* Overall page styles */
+body {
+    background-color: #36393f; /* Discord dark mode background color */
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    height: 100%;
+    background-color: #36393F;
+    color: #FFF;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+}
+
+.video-container {
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+iframe {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 125vw;
+    height: 150vh;
+    transform: translate(-50%, -47%);
+}
+
+/* Form container styles */
+form {
+    padding: 20px;
+    max-width: 400px;
+    width: 200%;
+    text-align: center;
+    border-radius: 0.25rem;
+    background-color: #202225;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+}
+
+/* Form header styles */
+h1 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Input field styles */
+.form-control {
+    background-color: #40444B;
+    /* Remove the border property to eliminate the white border */
+    border: none;
+    border-radius: 0.25rem;
+    color: #fff;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    width: 90%;
+}
+
+/* Error message styles */
+.is-invalid {
+    border: 1px solid #FF0000;
+}
+
+.invalid-feedback {
+    color: #FF0000;
+    font-size: 14px;
+}
+
+/* Remember me checkbox styles */
+.form-check-input {
+    background-color: #40444B;
+    border: 1px solid #7289DA;
+    color: #fff;
+    margin-right: 10px;
+}
+
+/* Button styles */
+.btn {
+    background-color: #007bff;
+    width: 100%;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Forgot password and Sign up links */
+a {
+    text-decoration: none;
+    color: #7289DA;
+    cursor: pointer;
+}
+
+/* Hover styles for links */
+a:hover {
+    text-decoration: underline;
+}
+
+/* Additional styling for the "Create an Account" link */
+h6 {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+</style>

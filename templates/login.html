@@ -1,0 +1,46 @@
+{% extends "html_template.html" %}
+{% block info %}
+ <form method='POST' action="" style="border: none;">
+  {{ form.hidden_tag() }}
+  <fieldset class="form-group" style="border: none;"> 
+    <div class="text-center">
+        <img width="200" height="200" src="https://cdn.discordapp.com/attachments/909947635715153952/1159715288594518016/image-removebg-preview.png?ex=65320807&is=651f9307&hm=7e5c7faa637bf72b94c41a70a23ca13ab65531bd9cb90d7604379ac76f6560b1" style="border: none;">
+    </div>
+   <h1>Welcome back to Whisp</h1>
+   <div class="form-group" style="border: none;">
+    {% if form.email.errors %}
+        {{ form.email(class="form-control form-control-lg is-invalid", placeholder="Email", style="border: none;") }}
+        <div class="invalid-feedback">
+            {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ form.email(class="form-control form-control-lg", placeholder="Email", style="border: none;") }}
+    {% endif %}
+</div>
+<div class="form-group" style="border: none;">
+    {% if form.password.errors %}
+        {{ form.password(class="form-control form-control-lg is-invalid", placeholder="Password", style="border: none;") }}
+        <div class="invalid-feedback">
+            {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ form.password(class="form-control form-control-lg", placeholder="Password", style="border: none;") }}
+    {% endif %}
+</div>
+   <div class="form-group" style="border: none;">
+    {{ form.remember(class="form-check-input") }} 
+    {{ form.remember.label(class="form-check-label") }}
+   </div>
+  </fieldset>
+  <br>
+  <div class="form-group" style="border: none;">
+   {{ form.submit(class="btn btn-outline-info", style="border: none;")}}
+  </div>
+  <br>
+  <a href="javascript:void(0)" onclick="location.href='/register'">Signup</a>
+ </form>
+{% endblock info %}
