@@ -6,9 +6,32 @@ import random, time
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins='*')  # Allow all origins (*)
 
+class Message():
+    def getid(self):
+        return self.id
+    def getusername(self):
+        return self.username
+    def getmessage(self):
+        return self.message
+    def gettime(self):
+        return self.time
+    
+    def __init__(self, id, username, message, time):
+        self.id = id
+        self.username = username
+        self.message = message
+        self.time = time
+
 # ... your existing Flask
 # add an api endpoint to flask app
-  
+@app.route('/messageDB', methods=["POST", "GET"])
+def messageDB(message):
+    messagedata = {"id": message.getid(),
+                   "username": message.getusername(),
+                   "message": message.getmessage(),
+                   "time": message.gettime()}
+    return messagedata
+
 @app.route('/wpmtest', methods=["GET"])
 def get_data():
     global test_data
@@ -120,5 +143,5 @@ def inputdata():
 @app.route('/')
 def say_hello():
     return render_template('main.md')
-if __name__ == '__main__':
-    app.run(port=5001)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5001, threaded=True)
