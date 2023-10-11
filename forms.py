@@ -1,16 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 import sqlite3
+
 class LoginForm(FlaskForm):
- email = StringField('Email',validators=[DataRequired(),Email()])
- password = PasswordField('Password',validators=[DataRequired()])
- remember = BooleanField('Remember Me')
- submit = SubmitField('Login')
- def validate_email(self, email):
-    conn = sqlite3.connect('/var/www/flask/login.db')
-    curs = conn.cursor()
-    curs.execute("SELECT email FROM login where email = (?)",[email.data])
-    valemail = curs.fetchone()
-    if valemail is None:
-      raise ValidationError('This Email ID is not registered. Please register before login')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Remember Me')
+    submit = SubmitField('Login')
+
+    def validate_username(self, username):
+        conn = sqlite3.connect('login.db')
+        curs = conn.cursor()
+        curs.execute("SELECT username FROM login WHERE username = ?", (username.data,))
+        valusername = curs.fetchone()
+        conn.close()  # Close the database connection
+
+        if valusername is None:
+            raise ValidationError('This username is not registered. Please register before login')
