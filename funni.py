@@ -44,7 +44,7 @@ def profile():
 def register():
     return render_template("register.html")
 
-@app.route("/userDic")
+@app.route("/userDic", methods=['GET', 'POST'])
 def userDic():
     connection = sqlite3.connect("login.db")
     cursor = connection.cursor()
