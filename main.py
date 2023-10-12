@@ -31,6 +31,33 @@ def load_user(user_id):
     else:
         return User(int(lu[0]), lu[1], lu[3], lu[2])
 
+class Message():
+    def getid(self):
+        return self.id
+    def getusername(self):
+        return self.username
+    def getmessage(self):
+        return self.message
+    def gettime(self):
+        return self.time
+    
+    def __init__(self, id, username, message, time):
+        self.id = id
+        self.username = username
+        self.message = message
+        self.time = time
+
+# ... your existing Flask
+# add an api endpoint to flask app
+
+@app.route('/messageDB', methods=["POST", "GET"])
+def messageDB(message):
+    messagedata = {"id": message.getid(),
+                   "username": message.getusername(),
+                   "message": message.getmessage(),
+                   "time": message.gettime()}
+    return messagedata
+
 @app.route("/")
 def home():
     return redirect("/login")
