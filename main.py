@@ -139,6 +139,10 @@ def inputdata():
     
     html_content += "WPM: " + str((total/(totalTime)*60)//1) + '\n' #calculates wpm by dividing words correct by time it took to type the words
     return html_content
+@app.route('/')
+def say_hello():
+    return render_template('main.md')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, threaded=True)
