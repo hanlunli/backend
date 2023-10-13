@@ -1,11 +1,13 @@
-from flask import Flask, render_template, flash, request, redirect
+from flask import Flask, render_template, flash, request, redirect, jsonify
 import sqlite3
 from flask_login import LoginManager, UserMixin, login_required, login_user, current_user
 from forms import LoginForm
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
 app.debug = True
+CORS(app) 
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -31,13 +33,60 @@ def load_user(user_id):
     else:
         return User(int(lu[0]), lu[1], lu[3], lu[2])
 
-
 # ... your existing Flask
 # add an api endpoint to flask app
+def init_db():
+    conn = sqlite3.connect('message.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
+# Initialize the database
+init_db()
+
+# Function to add a message to the database
+def add_message(message):
+    conn = sqlite3.connect('message.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO messages (message) VALUES (?)', (message,))
+    conn.commit()
+    conn.close()
+
+# Function to get the latest message from the database
+def get_latest_message():
+    conn = sqlite3.connect('message.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT message FROM messages ORDER BY id DESC LIMIT 1')
+    message = cursor.fetchone()
+    conn.close()
+    return message[0] if message else ""
+
+# Add an API endpoint to the Flask app
 @app.route('/messageDB', methods=["POST", "GET"])
-def messageDB(message):
-    return message
+def messageDB():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if "message" in data:
+                message = data["message"]
+                add_message(message)  # Store the message in the database
+
+                response_data = {"message": "Message received and stored successfully"}
+                return jsonify(response_data), 200
+            else:
+                return jsonify({"error": "Invalid request format"}), 400
+        except Exception as e:
+            return jsonify({"error": "An error occurred during message processing"}), 500
+
+    elif request.method == 'GET':
+        response_data = {"message": get_latest_message()}
+        return jsonify(response_data), 200
 
 @app.route("/")
 def home():
