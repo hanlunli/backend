@@ -68,19 +68,19 @@ def get_latest_message():
     return message[0] if message else ""
 
 def clear_db():
-    if request.method == 'POST':
+    # if request.method == 'POST':
         # Provide a secret key or some form of authentication/authorization to prevent unauthorized access
 
         # Clear the SQLite database
-        try:
-            conn = sqlite3.connect('message.db')
-            cursor = conn.cursor()
-            cursor.execute('DELETE FROM messages')
-            conn.commit()
-            conn.close()
-            return "Database cleared successfully", 200
-        except Exception as e:
-            return "An error occurred while clearing the database", 500
+    try:
+        conn = sqlite3.connect('message.db')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM messages')
+        conn.commit()
+        conn.close()
+        return "Database cleared successfully", 200
+    except Exception as e:
+        return "An error occurred while clearing the database", 500
 
 @app.route('/clear_db', methods=['GET', 'POST'])
 def get_clear_db():
