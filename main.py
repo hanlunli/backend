@@ -92,7 +92,7 @@ def messageDB():
         conn.close()
 
         # Convert the result to a list of dictionaries for easy JSON serialization
-        messages_list = {str(message[0]): message[1] for message in messages}
+        messages_list = {message[0]: message[1] for message in messages}
         
         return jsonify(messages_list)
 
