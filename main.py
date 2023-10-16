@@ -88,6 +88,19 @@ def messageDB():
         response_data = {"message": get_latest_message()}
         return jsonify(response_data), 200
 
+@app.route('/messagesDB/all', methods=["GET"])
+def all_messages():
+    conn = sqlite3.connect('message.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM messages')
+    messages = cursor.fetchall()
+    conn.close()
+
+    # Convert the result to a list of dictionaries for easy JSON serialization
+    messages_list = [{"id": message[0], "message": message[1]} for message in messages]
+    
+    return jsonify(messages_list)
+
 @app.route("/")
 def home():
     return redirect("/login")
