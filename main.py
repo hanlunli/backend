@@ -62,8 +62,8 @@ def add_message(message):
 def get_latest_message():
     conn = sqlite3.connect('message.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT message FROM messages ORDER BY id DESC LIMIT 1')
-    message = cursor.fetchone()
+    cursor.execute('SELECT message FROM messages ORDER BY id')
+    message = cursor.fetchall()
     conn.close()
     return message[0] if message else ""
 
