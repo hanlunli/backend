@@ -67,9 +67,9 @@ def get_latest_message():
     conn.close()
     return message[0] if message else ""
 
-@app.route('/clear_db', methods=['PUT'])
+@app.route('/clear_db', methods=['GET', 'POST'])
 def clear_db():
-    if request.method == 'PUT':
+    if request.method == 'POST':
         # Provide a secret key or some form of authentication/authorization to prevent unauthorized access
 
         # Clear the SQLite database
@@ -82,6 +82,9 @@ def clear_db():
             return "Database cleared successfully", 200
         except Exception as e:
             return "An error occurred while clearing the database", 500
+    elif request.method == 'GET':
+        return "To clear the database, send a POST request to this URL."
+
         
 # Add an API endpoint to the Flask app
 @app.route('/messageDB', methods=["POST", "GET"])
