@@ -67,9 +67,9 @@ def get_latest_message():
     conn.close()
     return message[0] if message else ""
 
-@app.route('/clear_db', methods=['POST'])
+@app.route('/clear_db', methods=['PUT'])
 def clear_db():
-    if request.method == 'POST':
+    if request.method == 'PUT':
         # Provide a secret key or some form of authentication/authorization to prevent unauthorized access
 
         # Clear the SQLite database
