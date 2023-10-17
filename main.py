@@ -110,7 +110,7 @@ def messageDB():
     elif request.method == 'GET':
         conn = sqlite3.connect('message.db')
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM messages')
+        cursor.execute('SELECT message FROM messages ORDER BY id')
         messages = cursor.fetchall()
         conn.close()
 
