@@ -176,33 +176,33 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    if current_user.is_authenticated:
-        return jsonify({'success': False, 'message': 'Already logged in'})
+# @app.route("/login", methods=['GET', 'POST'])
+# def login():
+#     username = StringField('Username', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     if current_user.is_authenticated:
+#         return jsonify({'success': False, 'message': 'Already logged in'})
 
-    form = LoginForm()
-    if form.validate_on_submit():
-        conn = sqlite3.connect('login.db')
-        curs = conn.cursor()
-        curs.execute("SELECT * FROM login WHERE username = ?", [form.username.data])
-        user = curs.fetchone()
-        conn.close()
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         conn = sqlite3.connect('login.db')
+#         curs = conn.cursor()
+#         curs.execute("SELECT * FROM login WHERE username = ?", [form.username.data])
+#         user = curs.fetchone()
+#         conn.close()
 
-        if user:
-            if form.username.data == user[1] and form.password.data == user[3]:
-                Us = load_user(user[0])
-                login_user(Us, remember=form.remember.data)
-                flash('Logged in successfully ' + form.username.data)
-                return jsonify({'success': True, 'message': 'Login successful'})
-            else:
-                return jsonify({'success': False, 'message': 'Incorrect password'})
-        else:
-            return jsonify({'success': False, 'message': 'User not found'})
+#         if user:
+#             if form.username.data == user[1] and form.password.data == user[3]:
+#                 Us = load_user(user[0])
+#                 login_user(Us, remember=form.remember.data)
+#                 flash('Logged in successfully ' + form.username.data)
+#                 return jsonify({'success': True, 'message': 'Login successful'})
+#             else:
+#                 return jsonify({'success': False, 'message': 'Incorrect password'})
+#         else:
+#             return jsonify({'success': False, 'message': 'User not found'})
 
-    return jsonify({'success': False, 'message': 'Invalid form data' 'Data': username})
+#     return jsonify({'success': False, 'message': 'Invalid form data' 'Data': username})
 
 
 if __name__ == "__main__":
