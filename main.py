@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.debug = True
 
 # Allow CORS from any origin
-CORS(app, resources={r"/messageDB": {"origins": "*"}})
+CORS(app, resources={r"/messageDB": {"origins": "https://whispbackend.duckdns.org/"}})
 # CORS(app, resources={r"/login": {"origins": "*"}})
 
 login_manager = LoginManager(app)
@@ -88,7 +88,7 @@ def clear_db():
 
 @app.route('/clear_db', methods=['GET', 'POST'])
 def get_clear_db():
-    clear_db()
+    return clear_db()
 
         
 # Add an API endpoint to the Flask app
