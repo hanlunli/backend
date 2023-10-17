@@ -8,6 +8,7 @@ import os
 app = Flask(__name__)
 app.debug = True
 CORS(app, resources={r"/messageDB": {"origins": "https://whispbackend.duckdns.org"}})
+CORS(app, resources={r"/login": {"origins": "*"}})
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
