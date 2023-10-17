@@ -173,11 +173,11 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect("/profile")
-    
+        return jsonify({'success': False, 'message': 'Already logged in'})
+
     form = LoginForm()
     if form.validate_on_submit():
         conn = sqlite3.connect('login.db')
@@ -195,7 +195,7 @@ def login():
             flash('Login Unsuccessful.')
             return jsonify({'success': False, 'message': 'Login unsuccessful'})
 
-    return render_template('login.html', title='Login', form=form)
+    return jsonify({'success': False, 'message': 'Invalid form data'})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, threaded=True)
