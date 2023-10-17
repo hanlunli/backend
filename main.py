@@ -191,11 +191,10 @@ def login():
             login_user(Us, remember=form.remember.data)
             flash('Logged in successfully ' + form.username.data)
             return jsonify({'success': True, 'message': 'Login successful'})
-            return redirect('/profile')
         else:
-            return jsonify({'success': False, 'message': 'Login unsuccessful'})
             flash('Login Unsuccessful.')
-        
+            return jsonify({'success': False, 'message': 'Login unsuccessful'})
+
     return render_template('login.html', title='Login', form=form)
 
 if __name__ == "__main__":
