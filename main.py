@@ -7,7 +7,7 @@ import os
 
 app = Flask(__name__)
 app.debug = True
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
