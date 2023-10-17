@@ -174,10 +174,9 @@ def registerAcc():
         return "An error occurred during registration."
 
 @app.route("/login", methods=['POST'])
-username = StringField('Username', validators=[DataRequired()])
-password = PasswordField('Password', validators=[DataRequired()])
-
 def login():
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     if current_user.is_authenticated:
         return jsonify({'success': False, 'message': 'Already logged in'})
 
