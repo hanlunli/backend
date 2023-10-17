@@ -186,16 +186,19 @@ def login():
         user = curs.fetchone()
         conn.close()
 
-        if user and form.username.data == user[1] and form.password.data == user[3]:
-            Us = load_user(user[0])
-            login_user(Us, remember=form.remember.data)
-            flash('Logged in successfully ' + form.username.data)
-            return jsonify({'success': True, 'message': 'Login successful'})
+        if user:
+            if form.username.data == user[1] and form.password.data == user[3]:
+                Us = load_user(user[0])
+                login_user(Us, remember=form.remember.data)
+                flash('Logged in successfully ' + form.username.data)
+                return jsonify({'success': True, 'message': 'Login successful'})
+            else:
+                return jsonify({'success': False, 'message': 'Incorrect password'})
         else:
-            flash('Login Unsuccessful.')
-            return jsonify({'success': False, 'message': 'Login unsuccessful'})
+            return jsonify({'success': False, 'message': 'User not found'})
 
     return jsonify({'success': False, 'message': 'Invalid form data'})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, threaded=True)
