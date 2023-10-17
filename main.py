@@ -174,6 +174,9 @@ def registerAcc():
         return "An error occurred during registration."
 
 @app.route("/login", methods=['POST'])
+username = StringField('Username', validators=[DataRequired()])
+password = PasswordField('Password', validators=[DataRequired()])
+
 def login():
     if current_user.is_authenticated:
         return jsonify({'success': False, 'message': 'Already logged in'})
@@ -197,7 +200,7 @@ def login():
         else:
             return jsonify({'success': False, 'message': 'User not found'})
 
-    return jsonify({'success': False, 'message': 'Invalid form data'})
+    return jsonify({'success': False, 'message': 'Invalid form data' 'Data': username})
 
 
 if __name__ == "__main__":
