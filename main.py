@@ -11,7 +11,7 @@ app.debug = True
 
 # Allow CORS from any origin
 CORS(app, resources={r"/messageDB": {"origins": "*"}})
-CORS(app, resources={r"/login": {"origins": "*"}})
+# CORS(app, resources={r"/login": {"origins": "*"}})
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
