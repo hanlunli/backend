@@ -184,8 +184,8 @@ def login():
     try:
         data = request.get_json()
         if "username" in data and "password" in data:
-            username = data["username"]
-            password = data["password"]
+            username = data["usernameData"]
+            password = data["passwordData"]
 
             conn = sqlite3.connect('login.db')
             curs = conn.cursor()
@@ -207,6 +207,5 @@ def login():
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
     return jsonify({'success': False, 'message': 'Invalid form data'})
-    
-    return redirect("/messageDB")
+
 
