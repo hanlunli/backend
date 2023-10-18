@@ -177,27 +177,36 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
-@app.route("/login", methods=['GET', 'POST'])
+from flask import jsonify, request, redirect
+
+@app.route("/login", methods=['POST'])
 def login():
-    # form = LoginForm()  # Create an instance of the LoginForm
-    # if form.validate_on_submit():
-    #     conn = sqlite3.connect('login.db')
-    #     curs = conn.cursor()
-    #     curs.execute("SELECT * FROM login WHERE username = ?", [form.username.data])
-    #     user = curs.fetchone()
-    #     conn.close()
+    try:
+        data = request.get_json()
+        if "username" in data and "password" in data:
+            username = data["username"]
+            password = data["password"]
 
-    #     if user:
-    #         if form.username.data == user[1] and form.password.data == user[3]:
-    #             Us = load_user(user[0])
-    #             login_user(Us, remember=form.remember.data)
-    #             flash('Logged in successfully ' + form.username.data)
-    #             return jsonify({'success': True, 'message': 'Login successful'})
-    #         else:
-    #             return jsonify({'success': False, 'message': 'Incorrect password'})
-    #     else:
-    #         return jsonify({'success': False, 'message': 'User not found'})
+            conn = sqlite3.connect('login.db')
+            curs = conn.cursor()
+            curs.execute("SELECT * FROM login WHERE username = ?", [username])
+            user = curs.fetchone()
+            conn.close()
 
-    # return jsonify({'success': False, 'message': 'Invalid form data'})
+            if user:
+                if username == user[1] and password == user[3]:
+                    Us = load_user(user[0])
+                    login_user(Us)
+                    return jsonify({'success': True, 'message': 'Login successful'})
+                else:
+                    return jsonify({'success': False, 'message': 'Incorrect password'})
+            else:
+                return jsonify({'success': False, 'message': 'User not found'})
+        else:
+            return jsonify({'success': False, 'message': 'Invalid request format'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'An error occurred during login'})
+    return jsonify({'success': False, 'message': 'Invalid form data'})
+    
     return redirect("/messageDB")
 
