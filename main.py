@@ -11,6 +11,7 @@ app.debug = True
 
 # Allow CORS from any origin
 CORS(app, resources={r"/messageDB": {"origins": "https://whispbackend.duckdns.org/"}}
+CORS(app, resources={r"/login": {"origins": "https://whispbackend.duckdns.org/"}}
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
