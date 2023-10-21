@@ -10,8 +10,7 @@ app = Flask(__name__)
 app.debug = True
 
 # Allow CORS from any origin
-CORS(app, resources={r"/messageDB": {"origins": "https://whispbackend.duckdns.org/"}}
-CORS(app, resources={r"/login": {"origins": "https://whispbackend.duckdns.org/"}}
+CORS(app)
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -206,7 +205,3 @@ def login():
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
 
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8888)
