@@ -182,11 +182,10 @@ from flask import jsonify, request, redirect
 @app.route("/login", methods=['POST'])
 def login():
     try:
-        data = request.get_json()
-        if "username" in data and "password" in data:
-            username = data["usernameData"]
-            password = data["passwordData"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
+        if username and password:
             conn = sqlite3.connect('login.db')
             curs = conn.cursor()
             curs.execute("SELECT * FROM login WHERE username = ?", [username])
@@ -206,6 +205,6 @@ def login():
             return jsonify({'success': False, 'message': 'Invalid request format'})
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
-    return jsonify({'success': False, 'message': 'Invalid form data'})
+
 
 
