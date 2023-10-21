@@ -182,8 +182,8 @@ from flask import jsonify, request, redirect
 @app.route("/login", methods=['POST'])
 def login():
     try:
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = request.form.get("usernameData")
+        password = request.form.get("passwordData")
 
         if username and password:
             conn = sqlite3.connect('login.db')
