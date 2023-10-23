@@ -4,7 +4,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, cur
 from forms import LoginForm
 from flask_cors import CORS
 import os
-from wtforms import StringField, PasswordField, BooleanField, SubmitField,DataRequired  
+from wtforms import StringField, PasswordField, BooleanField, SubmitField  
 
 app = Flask(__name__)
 app.debug = True
@@ -176,9 +176,7 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
-from flask import jsonify, request, redirect
-
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['POST', 'GET'])
 def login():
     try:
         username = request.form.get("usernameData")
@@ -205,3 +203,6 @@ def login():
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
 
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5001, threaded=True)
