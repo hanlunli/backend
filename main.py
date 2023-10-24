@@ -1,180 +1,278 @@
-from flask import Flask, render_template, flash, request, redirect, jsonify
-import sqlite3
-from flask_login import LoginManager, UserMixin, login_required, login_user, current_user
-from forms import LoginForm
-from flask_cors import CORS
-import os
-from wtforms import StringField, PasswordField, BooleanField, SubmitField  
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Add animation to the form elements */
+        .form-group {
+            transition: all 0.3s;
+        }
 
-app = Flask(__name__)
-app.debug = True
+        .form-group:hover {
+            transform: scale(1.02);
+        }
 
-# Allow CORS from any origin
-CORS(app, supports_credentials=True, allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Origin"])
+        .form-control {
+            transition: border-color 0.3s;
+        }
 
-login_manager = LoginManager(app)
-login_manager.login_view = "login"
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
+        .form-control.is-invalid {
+            border-color: #ff0000;
+            animation: shake 0.3s;
+        }
 
-class User(UserMixin):
-    def __init__(self, id, username, password, email):
-        self.id = str(id)
-        self.username = username
-        self.password = password
-        self.email = email
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
 
-@login_manager.user_loader
-def load_user(user_id):
-    conn = sqlite3.connect('login.db')
-    curs = conn.cursor()
-    curs.execute("SELECT * FROM login WHERE user_id = ?", [user_id])
-    lu = curs.fetchone()
-    conn.close()
-    if lu is None:
-        return None
-    else:
-        return User(int(lu[0]), lu[1], lu[3], lu[2])
+        /* Add animation to the submit button */
+        .btn-outline-info {
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-# ... your existing Flask
-# add an api endpoint to flask app
-def init_db():
-    conn = sqlite3.connect('message.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            message TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+        .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" action="" style="border: none;" id="myForm">
+        <fieldset class="form-group" style="border: none;">
+            <div class="text-center">
+                <img class="form-group" width="200" height="200" src="https://cdn.discordapp.com/attachments/909947635715153952/1159715288594518016/image-removebg-preview.png?ex=65320807&is=651f9307&hm=7e5c7faa637bf72b94c41a70a23ca13ab65531bd9cb90d7604379ac76f6560b1" style="border: none;">
+            </div>
+            <h1>Welcome back to Whisp</h1>
+            <div class="form-group" style="border: none;">
+                <input type="text" id="usernameField" class="form-control form-control-lg" name="username" placeholder="Username" style="border: none;">
+                <div class="invalid-feedback">
+                    <!-- Error messages for username can be added here -->
+                </div>
+            </div>
+            <div class="form-group" style="border: none;">
+                <input type="password" id="passwordField" class="form-control form-control-lg" name="password" placeholder="Password" style="border: none;">
+                <div class="invalid-feedback">
+                    <!-- Error messages for password can be added here -->
+                </div>
+            </div>
+            <div class="form-group" style="border: none;">
+                <input type="checkbox" class="form-check-input" name="remember">
+                <label class="form-check-label">Remember Me</label>
+            </div>
+        </fieldset>
+        <br>
+        <input type="hidden" id="csrfTokenField" name="csrf_token" value="">
+        <div class="form-group" style="border: none;">
+            <button type="submit" class="btn btn-outline-info" style="border: none;">Submit</button>
+        </div>
+        <br>
+        <a class="form-group" href="/register">Signup</a>
+    </form>
 
-# Initialize the database
-init_db()
+    <script>
+        async function submitForm() {
+            const username = document.getElementById('usernameField');
+            const password = document.getElementById('passwordField');
+            const form = document.getElementById('myForm');
 
-# Function to add a message to the database
-def add_message(message):
-    conn = sqlite3.connect('message.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO messages (message) VALUES (?)', (message,))
-    conn.commit()
-    conn.close()
+            try {
+                // Fetch the CSRF token from the server
+                const csrfResponse = await fetch("http://127.0.0.1:5001/gen_csrf");
 
-# Function to get the latest message from the database
-def get_latest_message():
-    conn = sqlite3.connect('message.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT message FROM messages ORDER BY id DESC')
-    message = cursor.fetchall()
-    conn.close()
-    return message[0] if message else ""
+                if (!csrfResponse.ok) {
+                    throw new Error('Network response for CSRF token was not ok');
+                }
 
-def clear_db():
-    # if request.method == 'POST':
-        # Provide a secret key or some form of authentication/authorization to prevent unauthorized access
+                const csrfData = await csrfResponse.json();
+                const csrfToken = csrfData.csrf_token;
 
-        # Clear the SQLite database
-    try:
-        conn = sqlite3.connect('message.db')
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM messages')
-        conn.commit()
-        conn.close()
-        return "Database cleared successfully", 200
-    except Exception as e:
-        return "An error occurred while clearing the database", 500
+                // Set the CSRF token in the hidden input field
+                document.getElementById('csrfTokenField').value = csrfToken;
 
-@app.route('/clear_db', methods=['GET', 'POST'])
-def get_clear_db():
-    return clear_db()
+                const apiUrl = "http://127.0.0.1:5001/login";
 
-        
-# Add an API endpoint to the Flask app
-@app.route('/messageDB', methods=["POST", "GET"])
-def messageDB():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            if "message" in data:
-                message = data["message"]
-                add_message(message)  # Store the message in the database
+                // Get the form data
+                const formData = new FormData(form);
+                formData.append("csrf_token", csrfToken);
+                console.log(form)
 
-                response_data = {"message": "Message received and stored successfully"}
-                return jsonify(response_data), 200
-            else:
-                return jsonify({"error": "Invalid request format"}), 400
-        except Exception as e:
-            return jsonify({"error": "An error occurred during message processing"}), 500
+                // Send a POST request to your backend server
+                const loginResponse = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'cors',
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    }
+                });
 
-    elif request.method == 'GET':
-        conn = sqlite3.connect('message.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM messages')
-        messages = cursor.fetchall()
-        conn.close()
+                if (!loginResponse.ok) {
+                    throw new Error('Login request was not successful');
+                }
 
-        # Convert the result to a list of dictionaries for easy JSON serialization
-        messages_list = {int(message[0]): message[1] for message in messages}
-        
-        return jsonify(messages_list)
+                const loginData = await loginResponse.json();
 
-@app.route('/messageDB/all', methods=["GET"])
-def all_messages():
-    conn = sqlite3.connect('message.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM messages')
-    messages = cursor.fetchall()
-    conn.close()
+                if (loginData.success) {
+                    // Login was successful, you can redirect or perform any other action
+                    console.log('Login successful:', loginData.message);
+                } else {
+                    // Login failed, show an error message or take appropriate action
+                    console.error('Login failed:', loginData.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
 
-    # Convert the result to a list of dictionaries for easy JSON serialization
-    messages_list = [{"id": message[0], "message": message[1]} for message in messages]
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            submitForm();
+        });
+
+
+    </script>
+     
+
+<style>
+    /* Discord-based CSS */
     
-    return jsonify(messages_list)
+    /* Overall page styles */
+    body {
+        background-color: #36393f; /* Discord dark mode background color */
+        color: #fff;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        height: 100%;
+        background-color: #36393F;
+        color: #FFF;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border: none;
+    }
+    
+    .video-container {
+        pointer-events: none;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+    }
+    
+    iframe {
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 125vw;
+        height: 150vh;
+        transform: translate(-50%, -47%);
+    }
+    
+    /* Form container styles */
+    form {
+        padding: 20px;
+        max-width: 400px;
+        width: 200%;
+        text-align: center;
+        border-radius: 0.25rem;
+        background-color: #202225;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);
+        color: #FFFFFF;
+    }
+    
+    /* Form header styles */
+    h1 {
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    /* Input field styles */
+    .form-control {
+        background-color: #40444B;
+        /* Remove the border property to eliminate the white border */
+        border: none;
+        border-radius: 0.25rem;
+        color: #fff;
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        width: 90%;
+    }
+    
+    /* Error message styles */
+    .is-invalid {
+        border: 1px solid #FF0000;
+    }
+    
+    .invalid-feedback {
+        color: #FF0000;
+        font-size: 14px;
+    }
+    
+    /* Remember me checkbox styles */
+    .form-check-input {
+        background-color: #40444B;
+        border: 1px solid #7289DA;
+        color: #fff;
+        margin-right: 10px;
+    }
+    
+    /* Button styles */
+    .btn {
+        background-color: #007bff;
+        width: 100%;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    /* Forgot password and Sign up links */
+    a {
+        text-decoration: none;
+        color: #7289DA;
+        cursor: pointer;
+    }
+    
+    /* Hover styles for links */
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Additional styling for the "Create an Account" link */
+    h6 {
+        font-size: 14px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    
+    </style>
+</body>
+</html>
 
-@app.route("/")
-def home():
-    return redirect("/login")
 
-@app.route("/profile")
-@login_required
-def profile():
-    return render_template("profile.html")
 
-@app.route("/register")
-def register():
-    return render_template("register.html")
-
-@app.route("/userDic", methods=['GET', 'POST'])
-def userDic():
-    connection = sqlite3.connect("login.db")
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM login")
-    data = cursor.fetchall()
-    column_names = [description[0] for description in cursor.description]
-    result = [dict(zip(column_names, row)) for row in data]
-    connection.close()
-
-    return(result)
-
-@app.route("/registerAcc", methods=['GET', 'POST'])
-def registerAcc():
-    try:
-        userEmail = request.form['email']
-        userPassword = request.form['password']
-        userName = request.form['username']
-
-        addDB = "INSERT INTO login (username, email, password) VALUES (?, ?, ?)"
-        conn = sqlite3.connect('login.db')
-        cursor = conn.cursor()
-        cursor.execute(addDB, (userName, userEmail, userPassword))
-        conn.commit()
-        conn.close()
-
-        return redirect("/login")
-    except Exception as e:
-        # Handle the exception, e.g., log the error or return an error page
-        return "An error occurred during registration."
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, threaded=True)
