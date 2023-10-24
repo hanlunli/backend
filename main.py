@@ -175,5 +175,32 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
+@app.route("/login", methods=['POST'])
+def login():
+    try:
+        username = request.form.get("usernameData")
+        password = request.form.get("passwordData")
+
+        if username and password:
+            conn = sqlite3.connect('login.db')
+            curs = conn.cursor()
+            curs.execute("SELECT * FROM login WHERE username = ?", [username])
+            user = curs.fetchone()
+            conn.close()
+
+            if user:
+                if username == user[1] and password == user[3]:
+                    Us = load_user(user[0])
+                    login_user(Us)
+                    return jsonify({'success': True, 'message': 'Login successful'})
+                else:
+                    return jsonify({'success': False, 'message': 'Incorrect password'})
+            else:
+                return jsonify({'success': False, 'message': 'User not found'})
+        else:
+            return jsonify({'success': False, 'message': 'Invalid request format'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'An error occurred during login'})
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, threaded=True)
