@@ -202,5 +202,3 @@ def login():
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, threaded=True)
