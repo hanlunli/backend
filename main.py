@@ -27,6 +27,23 @@ class User(UserMixin):
         self.username = username
         self.password = password
         self.email = email
+        self.chessWins = 0
+        self.chessGames = 0
+        self.connectWins = 0
+        self.connectGames = 0
+    def addChessW(self):
+        self.chessWins+=1
+    def addChessG(self):
+        self.chessGames+=1
+    def addConnectW(self):
+        self.connectWins+=1
+    def addConnectG(self):
+        self.connectGames+=1
+    def reset_acc(self):
+        self.chessGames = 0;
+        self.chessWins = 0;
+        self.connectGames = 0;
+        self.connectWins = 0;
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -216,6 +233,40 @@ def login():
         print("Form data received:", LoginForm())
         print(form.errors)
         return jsonify({'success': False, 'message': 'Invalid form data'})
+
+
+'''
+CHESS CODE
+'''
+
+@app.route('/chessboardDB', methods=["POST", "GET"])
+def chessBoardDB():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            if "message" in data:
+                message = data["message"]
+                add_message(message)  # Store the message in the database
+
+                response_data = {"message": "Message received and stored successfully"}
+                return jsonify(response_data), 200
+            else:
+                return jsonify({"error": "Invalid request format"}), 400
+        except Exception as e:
+            return jsonify({"error": "An error occurred during message processing"}), 500
+
+    elif request.method == 'GET':
+        conn = sqlite3.connect('message.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM messages')
+        messages = cursor.fetchall()
+        conn.close()
+
+        # Convert the result to a list of dictionaries for easy JSON serialization
+        messages_list = {int(message[0]): message[1] for message in messages}
+        
+        return jsonify(messages_list)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, threaded=True)
