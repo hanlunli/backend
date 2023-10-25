@@ -10,7 +10,8 @@ app = Flask(__name__)
 app.debug = True
 
 # Allow CORS from any origin
-CORS(app)
+CORS(app, supports_credentials=True, origins="https://hanlunli.github.io", allow_headers=["Content-Type", "Authorization"])
+
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
