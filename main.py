@@ -180,8 +180,8 @@ def registerAcc():
 @app.route("/login", methods=['POST'])
 def login():
     try:
-        username = request.form.get("usernameData")
-        password = request.form.get("passwordData")
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         if username and password:
             conn = sqlite3.connect('login.db')
