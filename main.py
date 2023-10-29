@@ -242,30 +242,16 @@ CHESS CODE
 @app.route('/chessboardDB', methods=["POST", "GET"])
 def chessBoardDB():
     if request.method == 'POST':
-        try:
-            data = request.get_json()
-            if "message" in data:
-                message = data["message"]
-                add_message(message)  # Store the message in the database
-
-                response_data = {"message": "Message received and stored successfully"}
-                return jsonify(response_data), 200
-            else:
-                return jsonify({"error": "Invalid request format"}), 400
-        except Exception as e:
-            return jsonify({"error": "An error occurred during message processing"}), 500
-
-    elif request.method == 'GET':
-        conn = sqlite3.connect('message.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM messages')
-        messages = cursor.fetchall()
-        conn.close()
+        data = request.get_json()
+        return jsonify(data), 200
+    # elif request.method == 'GET':
+    #     conn = sqlite3.connect('chessboard.db')
+    #     cursor = conn.cursor()
+    #     cursor.execute('SELECT * FROM messages')
+    #     messages = cursor.fetchall()
+    #     conn.close()
 
         # Convert the result to a list of dictionaries for easy JSON serialization
-        messages_list = {int(message[0]): message[1] for message in messages}
-        
-        return jsonify(messages_list)
 
 
 if __name__ == "__main__":
