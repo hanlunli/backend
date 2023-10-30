@@ -5,6 +5,7 @@ from forms import LoginForm
 from flask_cors import CORS
 import os
 from wtforms import StringField, PasswordField, BooleanField, SubmitField  
+import json
 
 app = Flask(__name__)
 app.debug = True
@@ -204,3 +205,55 @@ def login():
     except Exception as e:
         return jsonify({'success': False, 'message': 'An error occurred during login'})
 
+# Chess things below
+
+def initchess():
+    conn = sqlite3.connect('chessboard.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS boards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            board TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+initchess()
+def updatechessboard(board):
+    conn = sqlite3.connect('chessboard.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO boards (board) VALUES (?)', (json.dumps(board),))
+    conn.commit()
+    conn.close()
+
+
+@app.route('/chessboardDB', methods=["POST", "GET"])
+def chessboardDB():
+    if request.method == 'POST':
+        data = request.get_json()
+        if "board" in data:
+            board = data["board"]
+            updatechessboard(board)  # Store the message in the database
+            response_data =  {"board": "Chessboard Updated"}
+            print(response_data)
+            return jsonify(response_data)
+
+
+    elif request.method == 'GET':
+        conn = sqlite3.connect('chessboard.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT board FROM boards ORDER BY id DESC LIMIT 1')
+        board = cursor.fetchone()
+        conn.close()
+        if board:
+            return jsonify(board[0])
+        else:
+            return jsonify({})  # Return an empty JSON object if no board is found
+
+
+
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5001, threaded=True)
