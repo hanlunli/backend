@@ -4,17 +4,16 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, cur
 from forms import LoginForm
 from flask_cors import CORS
 import os
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from flask_wtf.csrf import generate_csrf
-from flask_wtf import CSRFProtect
+from wtforms import StringField, PasswordField, BooleanField, SubmitField  
+import json
 
 app = Flask(__name__)
 app.debug = True
 
-app.config["WTF_CSRF_ENABLED"] = False
+# Allow CORS from any origin
+CORS(app, supports_credentials=True, origins="*")
 
-CORS(app)  # Initialize CORS extension
+
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -108,9 +107,9 @@ def clear_db():
 
 @app.route('/clear_db', methods=['GET', 'POST'])
 def get_clear_db():
-    clear_db()
+    return clear_db()
 
-        
+
 # Add an API endpoint to the Flask app
 @app.route('/messageDB', methods=["POST", "GET"])
 def messageDB():
@@ -137,7 +136,7 @@ def messageDB():
 
         # Convert the result to a list of dictionaries for easy JSON serialization
         messages_list = {int(message[0]): message[1] for message in messages}
-        
+
         return jsonify(messages_list)
 
 @app.route('/messageDB/all', methods=["GET"])
@@ -150,7 +149,6 @@ def all_messages():
 
     # Convert the result to a list of dictionaries for easy JSON serialization
     messages_list = [{"id": message[0], "message": message[1]} for message in messages]
-    
     return jsonify(messages_list)
 
 @app.route("/")
@@ -197,61 +195,81 @@ def registerAcc():
         # Handle the exception, e.g., log the error or return an error page
         return "An error occurred during registration."
 
-@app.route('/gen_csrf', methods=['GET'])
-def get_csrf_token():
-    # Generate a new CSRF token
-    csrf_token = generate_csrf()
-
-    print("CSRF Key:", csrf_token)
-    
-    # Return the CSRF token as a JSON response
-    return jsonify({'csrf_token': csrf_token})
-
-
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
-    form = LoginForm()  # Create an instance of the LoginForm
-    if form.validate_on_submit():
-        conn = sqlite3.connect('login.db')
-        curs = conn.cursor()
-        curs.execute("SELECT * FROM login WHERE username = ?", [form.username.data])
-        user = curs.fetchone()
-        conn.close()
+    try:
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        if user:
-            if form.username.data == user[1] and form.password.data == user[3]:
-                Us = load_user(user[0])
-                login_user(Us, remember=form.remember.data)
-                flash('Logged in successfully ' + form.username.data)
-                return jsonify({'success': True, 'message': 'Login successful'})
+        if username and password:
+            conn = sqlite3.connect('login.db')
+            curs = conn.cursor()
+            curs.execute("SELECT * FROM login WHERE username = ?", [username])
+            user = curs.fetchone()
+            conn.close()
+
+            if user:
+                if username == user[1] and password == user[3]:
+                    Us = load_user(user[0])
+                    login_user(Us)
+                    return jsonify({'success': True, 'message': 'Login successful'})
+                else:
+                    return jsonify({'success': False, 'message': 'Incorrect password'})
             else:
-                return jsonify({'success': False, 'message': 'Incorrect password'})
+                return jsonify({'success': False, 'message': 'User not found'})
         else:
-            return jsonify({'success': False, 'message': 'User not found'})
-    else:
-        # Add a debug statement to print the form data
-        print("Form data received:", LoginForm())
-        print(form.errors)
-        return jsonify({'success': False, 'message': 'Invalid form data'})
+            return jsonify({'success': False, 'message': 'Invalid request format'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'An error occurred during login'})
 
+# Chess things below
 
-'''
-CHESS CODE
-'''
+def initchess():
+    conn = sqlite3.connect('chessboard.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS boards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            board TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+initchess()
+def updatechessboard(board):
+    conn = sqlite3.connect('chessboard.db')
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO boards (board) VALUES (?)', (json.dumps(board),))
+    conn.commit()
+    conn.close()
+
 
 @app.route('/chessboardDB', methods=["POST", "GET"])
-def chessBoardDB():
+def chessboardDB():
     if request.method == 'POST':
         data = request.get_json()
-        return jsonify(data), 200
-    # elif request.method == 'GET':
-    #     conn = sqlite3.connect('chessboard.db')
-    #     cursor = conn.cursor()
-    #     cursor.execute('SELECT * FROM messages')
-    #     messages = cursor.fetchall()
-    #     conn.close()
+        if "board" in data:
+            board = data["board"]
+            updatechessboard(board)  # Store the message in the database
+            response_data =  {"board": "Chessboard Updated"}
+            print(response_data)
+            return jsonify(response_data)
 
-        # Convert the result to a list of dictionaries for easy JSON serialization
+
+    elif request.method == 'GET':
+        conn = sqlite3.connect('chessboard.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT board FROM boards ORDER BY id DESC LIMIT 1')
+        board = cursor.fetchone()
+        conn.close()
+        if board:
+            return jsonify(board[0])
+        else:
+            return jsonify({})  # Return an empty JSON object if no board is found
+
+
+
 
 
 if __name__ == "__main__":
